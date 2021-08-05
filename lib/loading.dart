@@ -17,26 +17,39 @@ class _LoadingState extends State<Loading> {
     // TODO: implement initState
     super.initState();
     getLocation();
-    fetchData();
+
   }
   void getLocation() async {
     try{
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    print(position);} catch(e) {
+    String lat = position.latitude.toString();
+    String lon = position.longitude.toString();
+    print(position);
+    print(lat);
+    print(lon); } catch(e) {
       print("there was an error");
     }
   }
 
   void fetchData() async {
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    String lat = position.latitude.toString();
+    String lon = position.longitude.toString();
+    lat = '${lat}'+'0';
+    lon = '${lon}'+'0';
+    print(lat);
+    print(lon);
+
      Response response = await get(
-         Uri.parse("https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc?request=coordsToaddr&coords=129.1133567,35.2982640&sourcecrs=epsg:4326&output=json"),
+         Uri.parse("https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc?request=coordsToaddr&coords=${lon}0,${lat}0&sourcecrs=epsg:4326&output=json"),
        headers: test
      );
      String jsonData = response.body;
-     var myJson_gu = jsonDecode(jsonData)["results"][1]['region']['area2']['name'];
-     print(myJson_gu);
-     var myJson_si = jsonDecode(jsonData)["results"][1]['region']['area1']['name'];
-     print(myJson_si);
+     print(jsonData);
+     // var myJson_gu = jsonDecode(jsonData)["results"][1]['region']['area2']['name'];
+     // print(myJson_gu);
+     // var myJson_si = jsonDecode(jsonData)["results"][1]['region']['area1']['name'];
+     // print(myJson_si);
   }
 
   Map<String, String> test = {
@@ -53,6 +66,7 @@ class _LoadingState extends State<Loading> {
         child: ElevatedButton(
           onPressed: (){
             fetchData();
+
           },
           child: Text('Get my location'),
         ),
